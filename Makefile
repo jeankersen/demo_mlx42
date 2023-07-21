@@ -3,14 +3,14 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: alexnshimiyimana <alexnshimiyimana@stud    +#+  +:+       +#+         #
+#    By: anshimiy <anshimiy@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2022/11/21 13:39:11 by anshimiy          #+#    #+#              #
-#    Updated: 2023/07/18 11:26:21 by alexnshimiy      ###   ########.fr        #
+#    Created: 2022/03/28 13:33:02 by anshimiy          #+#    #+#              #
+#    Updated: 2022/10/28 17:51:42 by anshimiy         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = cub3d
+NAME = mylib.a
 
 # Hide calls
 export VERBOSE	=	FALSE
@@ -20,51 +20,70 @@ else
 	HIDE = @
 endif
 
-SRCDIR = src/
-PARSE = parse/
-UTILS = utils/
-RAYCAST = raycasting/
-
-MLXDIR = ./includes/MLX42/
-MYLIB_DIR = ./includes/my_lib/
-
-SRCS =  $(SRCDIR)main.c	$(SRCDIR)cub3d.c																								\
-		$(SRCDIR)$(UTILS)errors.c $(SRCDIR)$(UTILS)map_position.c $(SRCDIR)$(UTILS)ft_split_set.c $(SRCDIR)$(UTILS)init_draw.c		\
-		$(SRCDIR)$(UTILS)draw.c $(SRCDIR)$(UTILS)math.c $(SRCDIR)$(UTILS)mlx.c $(SRCDIR)$(UTILS)minimap.c 		\
-		$(SRCDIR)$(PARSE)color.c $(SRCDIR)$(PARSE)init.c $(SRCDIR)$(PARSE)parse.c $(SRCDIR)$(PARSE)texture_parsing.c					\
-		$(SRCDIR)$(PARSE)map.c $(SRCDIR)$(PARSE)dimentions.c																			\
-		$(SRCDIR)$(RAYCAST)raycaster.c $(SRCDIR)$(RAYCAST)movements.c $(SRCDIR)$(RAYCAST)init.c $(SRCDIR)$(RAYCAST)walls.c 				\
-		
 CC = gcc
-CFLAGS = -Wno-unused-variable # -Wall -Wextra -Werror 
-LINKS	= 
-MLXFLAGS = -lglfw -L$(shell brew --prefix glfw)/lib -framework Cocoa -framework OpenGL -framework IOKit
-MLXLIB = $(MLXDIR)build/libmlx42.a
-MYLIB = ./includes/my_lib/mylib.a
-RM = rm -rf
+CFLAGS = -Wall -Wextra -Werror
+AR = ar rcs
+RM = rm -f
 
 # .o files in bin
 OBJDIR	=	bin/
 OBJS	=	$(patsubst $(SRCDIR)%.c,$(OBJDIR)%.o,$(SRCS))
+SRCDIR = src/
+SRCS = src/ft_isalpha.c \
+		src/ft_isdigit.c \
+		src/ft_isalnum.c \
+		src/ft_isascii.c \
+		src/ft_isprint.c \
+		src/ft_strlen.c \
+		src/ft_memset.c \
+		src/ft_bzero.c \
+		src/ft_memcpy.c \
+		src/ft_memmove.c \
+		src/ft_strlcpy.c \
+		src/ft_strlcat.c \
+		src/ft_toupper.c \
+		src/ft_tolower.c \
+		src/ft_strchr.c \
+		src/ft_strrchr.c \
+		src/ft_strncmp.c \
+		src/ft_memchr.c \
+		src/ft_memcmp.c \
+		src/ft_strnstr.c \
+		src/ft_atoi.c \
+		src/ft_substr.c \
+		src/ft_strjoin.c \
+		src/ft_strtrim.c \
+		src/ft_split.c \
+		src/ft_itoa.c \
+		src/ft_strmapi.c \
+		src/ft_striteri.c \
+		src/ft_putchar_fd.c \
+		src/ft_putstr_fd.c \
+		src/ft_putendl_fd.c \
+		src/ft_putnbr_fd.c \
+		src/ft_calloc.c \
+		src/ft_strdup.c \
+		src/hexa_functions.c \
+		src/ft_printf.c \
+		src/nbr_functions.c \
+		src/char_functions.c \
+		src/ft_free_str_array.c \
+		src/throw_error.c \
+		src/ft_atol.c \
+		src/ft_nb_out_bounds.c \
+		src/ft_lstnew.c \
+		src/ft_lstadd_front.c \
+		src/ft_lstsize.c \
+		src/ft_lstlast.c \
+		src/ft_lstadd_back.c \
+		src/ft_lstdelone.c \
+		src/ft_lstclear.c \
+		src/ft_lstiter.c \
+		src/ft_lstmap.c \
+		src/get_next_line.c \
 
-all: $(MLXLIB) $(NAME)
-
-$(NAME):	$(OBJS)
-	$(HIDE) make -C ./includes/my_lib
-	$(HIDE) @$(CC) $(MLXLIB) $(MYLIB) $(MLXFLAGS) $(CFLAGS) $(OBJS) $(LINKS) -o $(NAME) 
-	@echo "$(GREEN)$(NAME) compiled!$(CEND)"
-
-$(MLXLIB):
-	@echo "$(CYAN)Compiling MLX42 library...$(CEND)"
-	@cmake -S $(MLXDIR) -B $(MLXDIR)build
-	$(HIDE) @make -C $(MLXDIR)build
-	@echo "$(GREEN)MLX42 compiled.$(CEND)"
-
-$(MYLIB):
-	@echo "$(CYAN)Compiling my_lib...$(CEND)"
-	$(HIDE) make -C ./includes/my_lib
-	@echo "$(GREEN)My_lib compiled.$(CEND)"
-
+$(NAME): $(OBJS)
+	$(HIDE) $(AR) $(NAME) $(OBJS)
 
 # Compiles sources into objects
 $(OBJS): $(OBJDIR)%.o : $(SRCDIR)%.c| $(OBJDIR)
@@ -72,74 +91,16 @@ $(OBJS): $(OBJDIR)%.o : $(SRCDIR)%.c| $(OBJDIR)
 
 # Creates directory for binaries
 $(OBJDIR):
-	$(HIDE) mkdir -p $@ $(OBJDIR)$(PARSE) $(OBJDIR)$(UTILS)
+	$(HIDE)mkdir -p $@
 
-clean: 
-	$(HIDE) $(MAKE) -C ./includes/my_lib clean
-	$(HIDE) $(RM) $(OBJS)
-	@echo "$(YELLOW)$(NAME) cleaned!$(CEND)"
-	@echo "$(RED)  _.,-----/=\-----,._"
-	@echo " (__ ~~~.......~~~ __)"
-	@echo "  | ~~~.........~~~ |"
-	@echo "  | |  ; ,   , ;  | |"
-	@echo "  | |  | |   | |  | |"
-	@echo "  | |  | |   | |  | |"
-	@echo "  | |  | |   | |  | |"
-	@echo "  | |  | |   | |  | |"
-	@echo "  | |  | |   | |  | |"
-	@echo "  | |  | |   | |  | |"
-	@echo "  | |  | |   | |  | |"
-	@echo "  |. \_| |   | |_/ .|"
-	@echo "   °-,.__ ~~~ __.,-°$(CEND)"
-	
+all: $(NAME)
+
+clean:
+	$(HIDE) $(RM) $(OBJS) $(BONUS_OBJ)
+
 fclean: clean
-	$(HIDE) $(MAKE) -C ./includes/my_lib fclean
 	$(HIDE) $(RM) $(NAME)
 
 re: fclean all
 
-git:
-	@git add .
-	@read -p "Insert the commit message: " TAG && git commit -m "$$TAG"
-	@git push
-	@echo "$(PURPLE)$(CBOLD) .      .      .      .      .      .      .      .      .      .      ."
-	@echo ".  $(PURPLE)$(NAME) is entering the git world$(CEND)$(PURPLE)$(CBOLD)  .       .       .       .    . "
-	@echo "   .        .        .        .        .        .        .        .        ."
-	@echo "     .         .         .        _......____._        .         ."
-	@echo "   .          .          . ..--°¨¨ .           ¨¨¨¨¨¨---...          ."
-	@echo "                   _...--¨¨        ................       °-.              ."
-	@echo "                .-°        ...:°::::;:::%:.::::::_;;:...     °-."
-	@echo "             .-°       ..::::°°°°°   _...---°¨¨¨¨:::+;_::.      °.      ."
-	@echo "  .        .° .    ..::::°      _.-¨¨               :::)::.       °."
-	@echo "         .      ..;:::°     _.-°         .             f::°::    o  $(GREEN)_$(CEND)$(PURPLE)$(CBOLD)"
-	@echo "        /     .:::%°  .  .-¨                        $(BLUE).-.$(CEND)$(PURPLE)$(CBOLD)  ::;;:.   $(GREEN)/¨ ¨x$(CEND)$(PURPLE)$(CBOLD)"
-	@echo "  .   .°  ¨¨::.::°    .-¨     _.--°¨¨¨-.           $(BLUE)(   )$(CEND)$(PURPLE)$(CBOLD)  ::.::  $(GREEN)|_.-° |$(CEND)$(PURPLE)$(CBOLD)"
-	@echo "     .°    ::;:°    .°     .-¨ $(YELLOW).d@@b.$(CEND)$(PURPLE)$(CBOLD)   \    .    . $(BLUE)°-°$(CEND)$(PURPLE)$(CBOLD)   ::%::   $(GREEN)\_ _/$(CEND)$(PURPLE)$(CBOLD)    ."
-	@echo "    .°    :,::°    /   . _°    $(YELLOW)8@@@@8$(CEND)$(PURPLE)$(CBOLD)   j      .-°       :::::      $(GREEN)¨$(CEND)$(PURPLE)$(CBOLD) o"
-	@echo "    | .  :.%:° .  j     $(RED)(_)$(CEND)$(PURPLE)$(CBOLD)    $(YELLOW)°@@@P°$(CEND)$(PURPLE)$(CBOLD)  .°   .-¨         ::.::    .  f"
-	@echo "    |    ::::     (        -..____...-°  .-¨          .::::°       /"
-	@echo ".   |    °:°::    °.                ..--°        .  .::°::   .    /"
-	@echo "    j     °:::::    °-._____...---¨¨             .::%:::°       .°  ."
-	@echo "     \      ::.:%..             .       .    ...:,::::°       .°"
-	@echo " .    \       °:::°:..                ....::::.::::°       .-°          ."
-	@echo "       \    .   °°:::%::°::.......:::::%::.::::°°       .-°"
-	@echo "      . °.        . °°::::::%::::.::;;:::::°°°      _.-°          ."
-	@echo "  .       °-..     .    .   °°°°°°°°°         . _.-°     .          ."
-	@echo "         .    ¨¨--...____    .   ______......--° .         .         ."
-	@echo "  .        .        .    ¨¨¨¨¨¨¨¨     .        .        .        .        ."
-	@echo " .       .       .       .       .       .       .       .       ."
-	@echo "     .      .      .      .      .      .      .      .      .      .      .$(CEND)"
-	@echo "\n$(YELLOW)$(NAME) committed sucessfully$(CEND)"
-
-norm:
-	@norminette $(SRC) ./includes/*.h ./includes/my_lib/
-
-RED = \033[1;31m
-GREEN = \033[1;32m
-YELLOW = \033[1;33m
-BLUE = \033[1;34m
-PURPLE = \033[1;35m
-CYAN = \033[0;36m
-CEND = \033[0m
-CBOLD     = \033[1m
-.PHONY: all clean fclean re 
+.PHONY : all clean fclean re bonus
